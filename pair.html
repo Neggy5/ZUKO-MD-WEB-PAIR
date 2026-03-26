@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZUKO-MD - WhatsApp Linker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    :root {
+      /* Dark Military Theme Palette */
+      --primary-color: #1a1a1a;
+      --secondary-color: #ffffff;
+      --accent-color: #2ecc71; /* Neon green for tech feel */
+      --text-color: #e0e0e0;
+      --background-color: #0f0f0f;
+      --card-bg: #1a1a1a;
+      --hover-color: #262626;
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    /* Battery Display Section */
+    .status-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--accent-color);
+    }
+
+    .battery-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(46, 204, 113, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 16px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #000;
+      box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      color: var(--secondary-color);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 20px;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .social-icons a {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background: var(--hover-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .social-icons a.youtube { color: #FF0000; }
+    .social-icons a.whatsapp { color: #25D366; }
+    .social-icons a.github { color: #fff; }
+
+    .social-icons a:hover {
+      transform: translateY(-3px);
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      background: #000;
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .toggle-option {
+      flex: 1;
+      padding: 10px 16px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-option.active {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--accent-color);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      background: #000;
+      color: var(--secondary-color);
+      font-size: 15px;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-color);
+      border: none;
+      border-radius: 12px;
+      color: #000;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 16px;
+    }
+
+    .code-display {
+      background: #000;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      color: var(--accent-color);
+      border: 1px dashed var(--accent-color);
+      margin-bottom: 16px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .copy-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--hover-color);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--secondary-color);
+      cursor: pointer;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #loading i { color: var(--accent-color); animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="status-bar">
+      <div class="battery-info" id="batteryDisplay">
+        <i class="fas fa-battery-three-quarters"></i>
+        <span id="batteryLevel">--%</span>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="logo"><i class="fas fa-shield-alt"></i></div>
+      <h1 class="title">ZUKO-MD</h1>
+      <p class="subtitle">Secure WhatsApp Deployment Terminal</p>
+      <div class="social-icons">
+        <a href="https://www.youtube.com/@mr_unique_hacker?sub_confirmation=1" target="_blank" class="youtube"><i class="fab fa-youtube"></i></a>
+        <a href="https://whatsapp.com/channel/0029VbCUOf389inrrurd6n1z" target="_blank" class="whatsapp" title="Channel"><i class="fas fa-bullhorn"></i></a>
+        <a href="https://chat.whatsapp.com/DdZI3H1EFeOJs9TCIyVyXa?mode=gi_t" target="_blank" class="whatsapp" title="Group"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://github.com/mruniquehacker/Knightbot-md" target="_blank" class="github"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+
+    <div class="toggle-container">
+      <div class="toggle-option active" data-mode="pair"><i class="fas fa-key"></i> Pair</div>
+      <div class="toggle-option" data-mode="qr"><i class="fas fa-qrcode"></i> QR</div>
+    </div>
+
+    <div class="input-group" id="inputGroup">
+      <label class="input-label">Terminal Identity (Phone Number)</label>
+      <input type="text" id="mobileNumber" class="input-field" placeholder="+234..." pattern="[+][0-9]{10,}">
+    </div>
+
+    <button class="generate-btn" id="submit">ESTABLISH CONNECTION</button>
+
+    <div class="loading" id="loading" style="display:none; text-align:center; margin-bottom:10px;">
+      <i class="fas fa-spinner fa-2x"></i>
+    </div>
+
+    <div class="code-display" id="codeDisplay">Awaiting Authentication...</div>
+
+    <div class="qr-display" id="qrDisplay" style="display:none; text-align:center;">
+      <img id="qrImage" style="width:200px; border-radius:10px; margin-bottom:10px;" src="" alt="QR">
+    </div>
+
+    <button class="copy-btn" id="copy" onclick="copyCode()">
+      <i class="fas fa-copy"></i> Copy Access Token
+    </button>
+
+    <div class="footer">
+      <p>© 2026 ZUKO-MD SYSTEM | ENCRYPTED LINK</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    // Battery API Implementation
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(battery => {
+        function updateBattery() {
+          const level = Math.floor(battery.level * 100);
+          document.getElementById('batteryLevel').innerText = level + '%';
+          const icon = document.querySelector('.battery-info i');
+          if (level <= 20) icon.className = 'fas fa-battery-empty';
+          else if (level <= 50) icon.className = 'fas fa-battery-quarter';
+          else if (level <= 80) icon.className = 'fas fa-battery-three-quarters';
+          else icon.className = 'fas fa-battery-full';
+        }
+        updateBattery();
+        battery.addEventListener('levelchange', updateBattery);
+      });
+    }
+
+    let currentMode = 'pair';
+
+    document.querySelectorAll('.toggle-option').forEach(option => {
+      option.addEventListener('click', function() {
+        const mode = this.dataset.mode;
+        if (mode === currentMode) return;
+        document.querySelectorAll('.toggle-option').forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+        currentMode = mode;
+
+        const submitBtn = document.getElementById('submit');
+        const inputGroup = document.getElementById('inputGroup');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const qrDisplay = document.getElementById('qrDisplay');
+        
+        if (mode === 'pair') {
+          submitBtn.style.display = 'block';
+          inputGroup.style.display = 'block';
+          codeDisplay.style.display = 'flex';
+          qrDisplay.style.display = 'none';
+          codeDisplay.innerHTML = 'Awaiting Authentication...';
+        } else {
+          submitBtn.style.display = 'none';
+          inputGroup.style.display = 'none';
+          generateQRCode();
+        }
+      });
+    });
+
+    async function generateQRCode() {
+      const codeDisplay = document.getElementById("codeDisplay");
+      const qrDisplay = document.getElementById("qrDisplay");
+      const loading = document.getElementById("loading");
+      loading.style.display = "block";
+      qrDisplay.style.display = 'none';
+
+      try {
+        const response = await axios('/qr');
+        if (response.data.qr) {
+          document.getElementById('qrImage').src = response.data.qr;
+          qrDisplay.style.display = 'block';
+          codeDisplay.style.display = 'none';
+        }
+      } catch (e) {
+        codeDisplay.innerHTML = 'QR Failure';
+        codeDisplay.style.display = 'flex';
+      } finally {
+        loading.style.display = "none";
+      }
+    }
+
+    document.getElementById("submit").addEventListener("click", async () => {
+      const num = document.getElementById("mobileNumber").value.replace(/[^0-9]/g, "");
+      const display = document.getElementById("codeDisplay");
+      const loading = document.getElementById("loading");
+      if (!num) return alert("Enter Number");
+
+      loading.style.display = "block";
+      try {
+        const res = await axios(`/pair?number=${num}`);
+        display.innerHTML = `CODE: ${res.data.code || 'ERROR'}`;
+      } catch (e) {
+        display.innerHTML = 'System Error';
+      } finally {
+        loading.style.display = "none";
+      }
+    });
+
+    function copyCode() {
+      const text = document.getElementById("codeDisplay").innerText.replace('CODE: ', '');
+      navigator.clipboard.writeText(text);
+      const btn = document.getElementById("copy");
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+      setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i> Copy Access Token', 2000);
+    }
+  </script>
+</body>
+</html>
