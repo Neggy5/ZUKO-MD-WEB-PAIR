@@ -2,25 +2,18 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import fs from 'fs';
+
+// Import only pair router (QR removed)
 import pairRouter from './pair.js';
-import qrRouter from './qr.js';
 
 const app = express();
 
+// Resolve the current directory path in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure sessions directory exists
-const sessionsDir = path.join(__dirname, 'sessions');
-if (!fs.existsSync(sessionsDir)) {
-    fs.mkdirSync(sessionsDir, { recursive: true });
-    console.log('✅ Sessions directory created');
-}
-
 const PORT = process.env.PORT || 8000;
 
-// Increase max listeners
 import('events').then(events => {
     events.EventEmitter.defaultMaxListeners = 500;
 });
@@ -35,23 +28,14 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'pair.html'));
 });
 
-app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-    });
-});
-
 app.use('/pair', pairRouter);
-app.use('/qr', qrRouter);
+// QR route completely removed
 
-// Listen on all interfaces
-app.listen(PORT, '0.0.0.0', () => {
-    console.log('=================================');
-    console.log('✅ ZUKO-MD Bot is running!');
-    console.log(`📡 Server: http://0.0.0.0:${PORT}`);
-    console.log('=================================');
+app.listen(PORT, () => {
+    console.log(`ZUKO-MD Server Running`);
+    console.log(`YouTube: @mr_unique_hacker`);
+    console.log(`GitHub: @mruniquehacker`);
+    console.log(`Server: http://localhost:${PORT}`);
 });
 
 export default app;
